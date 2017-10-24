@@ -98,15 +98,14 @@ var SC;
     });
   }
 
-  search(){
-    currentTrack = this.value;
-    SC.get("/tracks/" + currentTrack).then(function(response) {
-      SC.player.pause();
-      SC.player.seek(0);
-      SC.player.play();
-    });
-  }
-
+  // search(){
+  //   currentTrack = this.value;
+  //   SC.get("/tracks/" + currentTrack).then(function(response) {
+  //     SC.player.pause();
+  //     SC.player.seek(0);
+  //     SC.player.play();
+  //   });
+  // }
  }
 
 function init(){
@@ -119,7 +118,7 @@ function init(){
  //plays on page load
  SoundCloud.playsong();
 
- SoundCloud.search();
+ //SoundCloud.search();
 
  $('#PlayBtn').hide();
  $('#PauseBtn').show();
@@ -143,16 +142,16 @@ function init(){
    $('#PlayBtn').show();
  });
 
- $('#search').change(function(){
-   currentTrack = this.value;
-   SC.get("/tracks", currentTrack).then(function(player) {
-    //console.log(player);
-    SoundCloud.stop();
-    $('#PlayBtn').hide();
-    $('#PauseBtn').show();
-    SoundCloud.play();
-   });
- });
+ // $('#search').change(function(){
+ //   currentTrack = this.value;
+ //   SC.get("/tracks", currentTrack).then(function(player) {
+ //    //console.log(player);
+ //    SoundCloud.stop();
+ //    $('#PlayBtn').hide();
+ //    $('#PauseBtn').show();
+ //    SoundCloud.play();
+ //   });
+ // });
 };
 
 init();
