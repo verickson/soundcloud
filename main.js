@@ -58,7 +58,7 @@ var SC;
   }
 
   playsong(){
-    SC.stream( "/tracks/"+ tracks[currentTrack].id ).then(function(player){
+    SC.stream( "/tracks/"+ currentTrack ).then(function(player){
       SC = player;
     	player.play();
       	player.on("finish",function(){
@@ -74,7 +74,7 @@ var SC;
 
   //this is a method
   pause(){
-    SC.stream( "/tracks/"+ tracks[currentTrack].id ).then(function(player){
+    SC.stream( "/tracks/"+ currentTrack ).then(function(player){
       SC = player;
     	player.pause();
       	player.on("finish",function(){
@@ -88,7 +88,7 @@ var SC;
     // SC.player.pause();
     // SC.player.seek(0);
 
-    SC.stream( "/tracks/"+ tracks[currentTrack].id ).then(function(player){
+    SC.stream( "/tracks/"+ currentTrack ).then(function(player){
       SC = player;
     	player.pause();
       player.seek(0);
@@ -99,10 +99,11 @@ var SC;
   }
 
   search(){
-    currentSong = this.value;
+    currentTrack = this.value;
     SC.get("/tracks/" + currentTrack).then(function(response) {
       SC.player.pause();
       SC.player.seek(0);
+      SC.player.play();
     });
   }
 
@@ -142,10 +143,9 @@ function init(){
    $('#PlayBtn').show();
  });
 
- var query;
  $('#search').change(function(){
-   query = this.value;
-   SC.get("/tracks", {q: query}).then(function(player) {
+   currentTrack = this.value;
+   SC.get("/tracks", currentTrack).then(function(player) {
     //console.log(player);
     SoundCloud.stop();
     $('#PlayBtn').hide();
