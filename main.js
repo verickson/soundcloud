@@ -1,19 +1,22 @@
 //function for the songs info
   //should capitalize the name of the function
   //in the () are the parameters
-function Song(name, author, genre, art){
+function Song(name, author, genre, art, url){
   this.name = name;
   this.genre = genre;
   this.author = author;
   this.art = art;
+  this.src = url;
 };
+
+//global variables
+var tracks = [];
+var currentTrack = 0;
+var SC;
 
  //main class jukebox
  class soundCloud{
    //if the global variable is defined up here then it can be refrenced in other places and 'this' would not be needed in the code for these values
-   var tracks = [];
-   var currentTrack = 0;
-   var SC;
 
    constructor(){
     //list of the songs I have and any new songs that they upload
@@ -50,7 +53,7 @@ function Song(name, author, genre, art){
     //loop through the songs in the playlist
     for(var i=0; i < tracks.length; i++){
       //the 1 is for the index of the songs that beign played
-      $('#playlist').html( '<img src="' + tracks[currentTrack].art + '"/>'+ '<h5 id="song_' + i + '">' + tracks[currentTrack].name + ' by ' + tracks[currentTrack].author +  tracks[currentTrack].genre + '</h5>');
+      $('#playlist').html( '<img src="' + tracks[currentTrack].art + '"/>'+ '<h5 id="song_' + i + '">' + tracks[currentTrack].name + ' by <a href=' + tracks[currentTrack].src + '>' + tracks[currentTrack].author + '</a>' +  tracks[currentTrack].genre + '</h5>');
     }
   }
 
@@ -65,28 +68,41 @@ function Song(name, author, genre, art){
   }
 
   //this is a method
-  play(){
-    player.play();
-  }
+  // play(){
+  //   SC.player.play();
+  // }
 
   //this is a method
   pause(){
-    player.pause();
+    SC.stream( "/tracks/"+ tracks[currentTrack].id ).then(function(player){
+      SC = player;
+    	player.pause();
+      	player.on("finish",function(){
+          currentTrack ++;
+        });
+    });
   }
 
   //this is a method
   stop(){
-    player.pause();
-    player.seek(0);
+    // SC.player.pause();
+    // SC.player.seek(0);
+
+    SC.stream( "/tracks/"+ tracks[currentTrack].id ).then(function(player){
+      SC = player;
+    	player.pause();
+      player.seek(0);
+      	player.on("finish",function(){
+          currentTrack ++;
+        });
+    });
   }
 
   search(){
     currentSong = this.value;
     SC.get("/tracks/" + currentTrack).then(function(response) {
-    //    // things to do after the tracks load...
-    //    // this should display all relevant information regarding the track
-    //    // e.g title, author, album art
-    //    console.log(response);
+      SC.player.pause();
+      SC.player.seek(0);
     });
   }
 
@@ -100,7 +116,7 @@ function init(){
   SoundCloud.displaySongs();
 
  //plays on page load
- SoundCloud.play();
+ SoundCloud.playsong();
 
  SoundCloud.search();
 
@@ -109,7 +125,7 @@ function init(){
 
  //button click information for what should happen and show
  $('#PlayBtn').click(function(){
-   SoundCloud.play();
+   SoundCloud.playsong();
    $(this).hide();
    $('#PauseBtn').show();
  });
@@ -130,7 +146,7 @@ function init(){
  $('#search').change(function(){
    query = this.value;
    SC.get("/tracks", {q: query}).then(function(player) {
-    console.log(player);
+    //console.log(player);
     SoundCloud.stop();
     $('#PlayBtn').hide();
     $('#PauseBtn').show();
