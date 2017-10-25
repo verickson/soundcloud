@@ -9,10 +9,6 @@ function Song(name, author, genre, art, url){
   this.src = url;
 };
 
-//global variables
-var tracks = [];
-var currentTrack = 0;
-var SC;
 
  //main class jukebox
  class soundCloud{
@@ -20,22 +16,30 @@ var SC;
 
    constructor(){
     //list of the songs I have and any new songs that they upload
-
+     var tracks = [];
      //play track based on id
+     var currentTrack = 336768726;
+   }
+
+   stream(){
      SC.stream("/tracks/336768726").then(function(player){
          tracks = player;
-         // console.log(player);
+         console.log(player);
         // streams the track
         player.play();
-        //info for the track and buttons to load
-        //$("#playlist").html(tracks[currentTrack].title);
-        $('#playlist').html( '<img src="' + tracks[currentTrack].art + '"/>'+ '<h5 id="song_' + i + '">' + tracks[currentTrack].name + ' by ' + tracks[currentTrack].author +  tracks[currentTrack].genre + '</h5>');
-      }).then(function(){
-          playSong();
-          $("#play").click(player.play());
-          $("#pause").click(player.pause());
-          $("#stop").click(player.stop());
-      });
+
+        playSong();
+        $("#play").click(function(){
+          player.play()
+        });
+        $("#pause").click(function(){
+          player.pause()
+        });
+        // $("#stop").click(player.stop());
+        $("#stop").click(function(){
+          player.pause();
+          player.seek(0);
+        });
    }
 
    init(){
@@ -50,6 +54,9 @@ var SC;
   displaySongs(){
     $('#playlist').html('');
 
+    SC.get("/tracks/"+ currentTrack).then(function(player){
+
+    });
     //loop through the songs in the playlist
     for(var i=0; i < tracks.length; i++){
       //the 1 is for the index of the songs that beign played
@@ -112,9 +119,12 @@ function init(){
   //instance of jukebox
   var SoundCloud = new soundCloud();
 
+  SoundCloud.init();
   //displays the names
   SoundCloud.displaySongs();
 
+
+  SoundCloud.stream();
  //plays on page load
  SoundCloud.playsong();
 
