@@ -8,6 +8,9 @@ function Song(name, author, genre, art, url){
   this.art = art;
   this.src = url;
 };
+var tracks = [];
+//play track based on id
+var currentTrack = 336768726;
 
 
  //main class jukebox
@@ -16,30 +19,6 @@ function Song(name, author, genre, art, url){
 
    constructor(){
     //list of the songs I have and any new songs that they upload
-     var tracks = [];
-     //play track based on id
-     var currentTrack = 336768726;
-   }
-
-   stream(){
-     SC.stream("/tracks/336768726").then(function(player){
-         tracks = player;
-         console.log(player);
-        // streams the track
-        player.play();
-
-        playSong();
-        $("#play").click(function(){
-          player.play()
-        });
-        $("#pause").click(function(){
-          player.pause()
-        });
-        // $("#stop").click(player.stop());
-        $("#stop").click(function(){
-          player.pause();
-          player.seek(0);
-        });
    }
 
    init(){
@@ -50,26 +29,60 @@ function Song(name, author, genre, art, url){
      });
    }
 
+   stream(){
+     SC.stream("/tracks/336768726").then(function(player){
+         tracks = player;
+         console.log(player);
+        // streams the track
+        player.play();
+        displaySongs();
+        playSong();
+
+        $('#PlayBtn').click(function(){
+          player.play();
+          $(this).hide();
+          $('#PauseBtn').show();
+        });
+        $('#PauseBtn').click(function(){
+          player.pause();
+          $(this).hide();
+          $('#PlayBtn').show();
+        });
+        $('#StopBtn').click(function(){
+          player.pause();
+          player.seek(0);
+          $('#PauseBtn').hide();
+          $('#PlayBtn').show();
+        });
+      });
+   }
+
   //this displays the tracks on the page as a method
   displaySongs(){
     $('#playlist').html('');
-
+    currentTrack = this.currentTrack;
     SC.get("/tracks/"+ currentTrack).then(function(player){
-
+      tracks = player;
+      console.log('Latest track: ' + tracks[currentTrack].title);
+      console.log('Latest track: ' + tracks[currentTrack].permalink_url);
+      console.log('Latest track: ' + tracks[currentTrack].full_name);
+      console.log('Latest track: ' + tracks[currentTrack].avatar_url);
     });
-    //loop through the songs in the playlist
-    for(var i=0; i < tracks.length; i++){
-      //the 1 is for the index of the songs that beign played
-      $('#playlist').html( '<img src="' + tracks[currentTrack].art + '"/>'+ '<h5 id="song_' + i + '">' + tracks[currentTrack].name + ' by <a href=' + tracks[currentTrack].src + '>' + tracks[currentTrack].author + '</a>' +  tracks[currentTrack].genre + '</h5>');
-    }
+    // for(var i=0; i < tracks.length; i++){
+    //   $('#playlist').html( '<img src="' + tracks[currentTrack].art + '"/>'+ '<h5 id="song_' + i + '">' + tracks[currentTrack].name + ' by <a href=' + tracks[currentTrack].src + '>' + tracks[currentTrack].author + '</a>' +  tracks[currentTrack].genre + '</h5>');
+    // }
+
+    for (var i = 0; i < tracks.length; i++) {
+        $('#playlist').html( '<img src="' + tracks[i].avatar_url + '"/>'+ '<h5 id="song_' + i + '">' + tracks[i].name + ' by <a href=' + tracks[i].permalink_url + '>' + tracks[i].full_name + '</a>' +  tracks[i].genre + '</h5>');
+      }
   }
 
   playsong(){
-    SC.stream( "/tracks/"+ currentTrack ).then(function(player){
-      SC = player;
+    SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
+      tracks = player;
     	player.play();
       	player.on("finish",function(){
-          currentTrack ++;
+          this.currentTrack ++;
         });
     });
   }
@@ -81,26 +94,23 @@ function Song(name, author, genre, art, url){
 
   //this is a method
   pause(){
-    SC.stream( "/tracks/"+ currentTrack ).then(function(player){
-      SC = player;
+    SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
+      tracks = player;
     	player.pause();
       	player.on("finish",function(){
-          currentTrack ++;
+          this.currentTrack ++;
         });
     });
   }
 
   //this is a method
   stop(){
-    // SC.player.pause();
-    // SC.player.seek(0);
-
-    SC.stream( "/tracks/"+ currentTrack ).then(function(player){
-      SC = player;
+    SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
+      tracks = player;
     	player.pause();
       player.seek(0);
       	player.on("finish",function(){
-          currentTrack ++;
+          this.currentTrack ++;
         });
     });
   }
@@ -117,14 +127,18 @@ function Song(name, author, genre, art, url){
 
 function init(){
   //instance of jukebox
+  //be careful of the spelling to make sure it is the same throughout all of the times it is called
+  //usually the items are lowercase and have an upperCase later in the word
   var SoundCloud = new soundCloud();
 
   SoundCloud.init();
+
   //displays the names
   SoundCloud.displaySongs();
 
 
   SoundCloud.stream();
+
  //plays on page load
  SoundCloud.playsong();
 
