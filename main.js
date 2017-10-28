@@ -1,17 +1,15 @@
 //function for the songs info
   //should capitalize the name of the function
   //in the () are the parameters
-function Song(name, author, genre, art, url){
-  this.name = name;
-  this.genre = genre;
-  this.author = author;
-  this.art = art;
-  this.src = url;
-};
-var tracks = [];
-//play track based on id
-var currentTrack = 336768726;
+// function Song(name, author, genre, art, url){
+//   this.name = name;
+//   this.genre = genre;
+//   this.author = author;
+//   this.art = art;
+//   this.src = url;
+// };
 
+var tracks = [];
 
  //main class jukebox
  class soundCloud{
@@ -19,6 +17,9 @@ var currentTrack = 336768726;
 
    constructor(){
     //list of the songs I have and any new songs that they upload
+    //play track based on id
+    this.currentTrack = 78995489;
+
    }
 
    init(){
@@ -32,7 +33,7 @@ var currentTrack = 336768726;
    stream(){
      SC.stream("/tracks/78995489").then(function(player){
          tracks = player;
-         console.log(player);
+         //console.log(player);
         // streams the track
         player.play();
 
@@ -56,21 +57,22 @@ var currentTrack = 336768726;
    }
 
   //this displays the tracks on the page as a method
-  displaySongs(currentTrack){
+  displaySongs(){
+    debugger;
     $('#playlist').html('');
-    currentTrack = this.currentTrack;
+    //currentTrack = this.currentTrack;
     for(var i = 0; i < tracks.length; i++){
       this.tracks.push(tracks[i]);
     }
-    SC.get("/tracks/"+ currentTrack).then(function(player){
+    SC.get("/tracks/"+ this.currentTrack).then(function(player){
       tracks = player;
-      console.log('Latest track: ' + tracks[currentTrack].title);
-      console.log('Latest track: ' + tracks[currentTrack].permalink_url);
+      console.log('Latest track: ' + tracks[this.currentTrack].title);
+      console.log('PermLink: ' + tracks[this.currentTrack].permalink_url);
       //authors do not exist in the SC
       // console.log('Latest track: ' + tracks[currentTrack].full_name);
-      console.log('Latest track: ' + tracks[currentTrack].avatar_url);
+      console.log('ImageLink: ' + tracks[this.currentTrack].artwork_url);
 
-      $('#playlist').html( '<img src="' + tracks[currentTrack].avatar_url + '"/>'+ '<h5 id="song_' + currentTrack + '">' + tracks[currentTrack].name + ' by <a href=' + tracks[currentTrack].permalink_url + '>' + '</a>' +  tracks[currentTrack].genre + '</h5>');
+      $('#playlist').html( '<img src="' + tracks[this.currentTrack].artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks[this.currentTrack].name + ' by <a href=' + tracks[this.currentTrack].permalink_url + '>' + '</a>' +  tracks[this.currentTrack].genre + '</h5>');
     });
 
     // for (var i = 0; i < tracks.length; i++) {
@@ -80,16 +82,16 @@ var currentTrack = 336768726;
 
   }
 
-  // displaySongsResult(tracks){
-  //   var songEl = document.createElement('div');
-  //   var link = document.createElement('a');
-  //   link.href = song.permalink_url;
-  //   var text = document.createTextNode(song.title);
-  //   link.appendChild(text);
-  //   songEl.appendChild(link);
-  //
-  //   document.getElementById('soundcloud').appendChild(songEl);
-  // }
+//   displaySongsResult(tracks){
+//     var songEl = document.createElement('div');
+//     var link = document.createElement('a');
+//     link.href = tracks.permalink_url;
+//     var text = document.createTextNode(song.title);
+//     link.appendChild(text);
+//     songEl.appendChild(link);
+//
+//     document.getElementById('soundcloud').appendChild(songEl);
+// }
 
   playsong(){
     SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
