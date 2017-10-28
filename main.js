@@ -8,8 +8,8 @@
 //   this.art = art;
 //   this.src = url;
 // };
-
 var tracks = [];
+
 
  //main class jukebox
  class soundCloud{
@@ -17,6 +17,7 @@ var tracks = [];
 
    constructor(){
     //list of the songs I have and any new songs that they upload
+
     //play track based on id
     this.currentTrack = 78995489;
 
@@ -34,8 +35,11 @@ var tracks = [];
      SC.stream("/tracks/78995489").then(function(player){
          tracks = player;
          //console.log(player);
+
         // streams the track
         player.play();
+        $('#PlayBtn').hide();
+        $('#PauseBtn').show();
 
         $('#PlayBtn').click(function(){
           player.play();
@@ -58,7 +62,6 @@ var tracks = [];
 
   //this displays the tracks on the page as a method
   displaySongs(){
-    debugger;
     $('#playlist').html('');
     //currentTrack = this.currentTrack;
     for(var i = 0; i < tracks.length; i++){
@@ -67,10 +70,10 @@ var tracks = [];
     SC.get("/tracks/"+ this.currentTrack).then(function(player){
       tracks = player;
       console.log('Latest track: ' + tracks[this.currentTrack].title);
-      console.log('PermLink: ' + tracks[this.currentTrack].permalink_url);
+      console.log('Latest track: ' + tracks[this.currentTrack].permalink_url);
       //authors do not exist in the SC
-      // console.log('Latest track: ' + tracks[currentTrack].full_name);
-      console.log('ImageLink: ' + tracks[this.currentTrack].artwork_url);
+      // console.log('Latest track: ' + tracks[this.currentTrack].full_name);
+      console.log('Latest track: ' + tracks[this.currentTrack].artwork_url);
 
       $('#playlist').html( '<img src="' + tracks[this.currentTrack].artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks[this.currentTrack].name + ' by <a href=' + tracks[this.currentTrack].permalink_url + '>' + '</a>' +  tracks[this.currentTrack].genre + '</h5>');
     });
@@ -82,20 +85,22 @@ var tracks = [];
 
   }
 
-//   displaySongsResult(tracks){
-//     var songEl = document.createElement('div');
-//     var link = document.createElement('a');
-//     link.href = tracks.permalink_url;
-//     var text = document.createTextNode(song.title);
-//     link.appendChild(text);
-//     songEl.appendChild(link);
-//
-//     document.getElementById('soundcloud').appendChild(songEl);
-// }
+  // displaySongsResult(tracks){
+  //   var songEl = document.createElement('div');
+  //   var link = document.createElement('a');
+  //   link.href = song.permalink_url;
+  //   var text = document.createTextNode(song.title);
+  //   link.appendChild(text);
+  //   songEl.appendChild(link);
+  //
+  //   document.getElementById('soundcloud').appendChild(songEl);
+  // }
 
   playsong(){
     SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
       tracks = player;
+      $('#PlayBtn').hide();
+      $('#PauseBtn').show();
     	player.play();
       	player.on("finish",function(){
           this.currentTrack ++;
@@ -107,6 +112,8 @@ var tracks = [];
   pause(){
     SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
       tracks = player;
+      $('#PauseBtn').hide();
+      $('#PlayBtn').show();
     	player.pause();
       	player.on("finish",function(){
           this.currentTrack ++;
@@ -118,6 +125,8 @@ var tracks = [];
   stop(){
     SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
       tracks = player;
+      $('#PauseBtn').hide();
+      $('#PlayBtn').show();
     	player.pause();
       player.seek(0);
       	player.on("finish",function(){
@@ -154,27 +163,6 @@ function init(){
 
  //SoundCloud.search();
 
- $('#PlayBtn').hide();
- $('#PauseBtn').show();
-
- //button click information for what should happen and show
- $('#PlayBtn').click(function(){
-   SoundCloud.playsong();
-   $(this).hide();
-   $('#PauseBtn').show();
- });
-
- $('#PauseBtn').click(function(){
-   SoundCloud.pause();
-   $(this).hide();
-   $('#PlayBtn').show();
- });
-
- $('#StopBtn').click(function(){
-   SoundCloud.stop();
-   $('#PauseBtn').hide();
-   $('#PlayBtn').show();
- });
 
  // $('#search').change(function(){
  //   currentTrack = this.value;
