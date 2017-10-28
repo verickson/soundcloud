@@ -35,8 +35,6 @@ var currentTrack = 336768726;
          console.log(player);
         // streams the track
         player.play();
-        displaySongs();
-        playSong();
 
         $('#PlayBtn').click(function(){
           player.play();
@@ -54,28 +52,43 @@ var currentTrack = 336768726;
           $('#PauseBtn').hide();
           $('#PlayBtn').show();
         });
+        displaySongs();
+        playSong();
       });
    }
 
   //this displays the tracks on the page as a method
-  displaySongs(){
+  displaySongs(currentTrack){
     $('#playlist').html('');
     currentTrack = this.currentTrack;
     SC.get("/tracks/"+ currentTrack).then(function(player){
       tracks = player;
       console.log('Latest track: ' + tracks[currentTrack].title);
       console.log('Latest track: ' + tracks[currentTrack].permalink_url);
-      console.log('Latest track: ' + tracks[currentTrack].full_name);
+      //authors do not exist in the SC
+      // console.log('Latest track: ' + tracks[currentTrack].full_name);
       console.log('Latest track: ' + tracks[currentTrack].avatar_url);
-    });
-    // for(var i=0; i < tracks.length; i++){
-    //   $('#playlist').html( '<img src="' + tracks[currentTrack].art + '"/>'+ '<h5 id="song_' + i + '">' + tracks[currentTrack].name + ' by <a href=' + tracks[currentTrack].src + '>' + tracks[currentTrack].author + '</a>' +  tracks[currentTrack].genre + '</h5>');
-    // }
 
-    for (var i = 0; i < tracks.length; i++) {
-        $('#playlist').html( '<img src="' + tracks[i].avatar_url + '"/>'+ '<h5 id="song_' + i + '">' + tracks[i].name + ' by <a href=' + tracks[i].permalink_url + '>' + tracks[i].full_name + '</a>' +  tracks[i].genre + '</h5>');
-      }
+      $('#playlist').html( '<img src="' + tracks[currentTrack].avatar_url + '"/>'+ '<h5 id="song_' + currentTrack + '">' + tracks[currentTrack].name + ' by <a href=' + tracks[currentTrack].permalink_url + '>' + '</a>' +  tracks[currentTrack].genre + '</h5>');
+    });
+
+    // for (var i = 0; i < tracks.length; i++) {
+    //     $('#playlist').html( '<img src="' + tracks[i].avatar_url + '"/>'+ '<h5 id="song_' + i + '">' + tracks[i].name + ' by <a href=' + tracks[i].permalink_url + '>' + '</a>' +  tracks[i].genre + '</h5>');
+    //   }
+
+
   }
+
+  // displaySongsResult(tracks){
+  //   var songEl = document.createElement('div');
+  //   var link = document.createElement('a');
+  //   link.href = song.permalink_url;
+  //   var text = document.createTextNode(song.title);
+  //   link.appendChild(text);
+  //   songEl.appendChild(link);
+  //
+  //   document.getElementById('soundcloud').appendChild(songEl);
+  // }
 
   playsong(){
     SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
@@ -135,7 +148,6 @@ function init(){
 
   //displays the names
   SoundCloud.displaySongs();
-
 
   SoundCloud.stream();
 
