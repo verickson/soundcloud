@@ -30,7 +30,7 @@ var currentTrack = 336768726;
    }
 
    stream(){
-     SC.stream("/tracks/336768726").then(function(player){
+     SC.stream("/tracks/78995489").then(function(player){
          tracks = player;
          console.log(player);
         // streams the track
@@ -52,8 +52,6 @@ var currentTrack = 336768726;
           $('#PauseBtn').hide();
           $('#PlayBtn').show();
         });
-        displaySongs();
-        playSong();
       });
    }
 
@@ -61,6 +59,9 @@ var currentTrack = 336768726;
   displaySongs(currentTrack){
     $('#playlist').html('');
     currentTrack = this.currentTrack;
+    for(var i = 0; i < tracks.length; i++){
+      this.tracks.push(tracks[i]);
+    }
     SC.get("/tracks/"+ currentTrack).then(function(player){
       tracks = player;
       console.log('Latest track: ' + tracks[currentTrack].title);
@@ -99,11 +100,6 @@ var currentTrack = 336768726;
         });
     });
   }
-
-  //this is a method
-  // play(){
-  //   SC.player.play();
-  // }
 
   //this is a method
   pause(){
