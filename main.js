@@ -10,51 +10,6 @@
 // };
 var tracks = [];
 
-// $.getJSON("https://api.soundcloud.com/tracks/78995489.json?client_id=fd4e76fc67798bfa742089ed619084a6",
-//     function( data ) {
-//         console.log(data);
-// });
-
-
-
-
-//Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://api.soundcloud.com/tracks/78995489?format=json&client_id=fd4e76fc67798bfa742089ed619084a6. (Reason: CORS preflight channel did not succeed).
-
-//use jsonp
-// $.ajax({
-//   type: "GET",
-//   crossDomain: true,
-//   jsonp: "callback",
-//   dataType: 'jsonp',
-//   url: 'https://api.soundcloud.com/tracks/78995489.json?client_id=fd4e76fc67798bfa742089ed619084a6',
-//   success: function(response){
-//     console.log(response);
-//   }
-// })
-// <iframe width="100%" height="300" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/78995489&amp;color=%23ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&amp;visual=true"></iframe>
-
-// function getJSONP(url, success) {
-//     var ud = '_' + +new Date,
-//         script = document.createElement('script'),
-//         head = document.getElementsByTagName('head')[0]
-//                || document.documentElement;
-//     window[ud] = function(data) {
-//         head.removeChild(script);
-//         success && success(data);
-//     };
-//     script.src = url.replace('callback=?', 'callback=' + ud);
-//     head.appendChild(script);
-// }
-// getJSONP('http://soundcloud.com/oembed?url=http%3A//soundcloud.com/david-butterfield-music/to-the-stars-ft-liam-brien%20&format=js&callback=?', function(data){
-//     console.log(data);
-// });
-
-
-
-
-
-
-
  //main class jukebox
  class soundCloud{
    //if the global variable is defined up here then it can be refrenced in other places and 'this' would not be needed in the code for these values
@@ -62,33 +17,41 @@ var tracks = [];
    constructor(){
     //list of the songs I have and any new songs that they upload
 
-    // var jsonp = 'http://soundcloud.com/oembed?url=http%3A//soundcloud.com/david-butterfield-music/to-the-stars-ft-liam-brien%20&format=js&callback=?';
-
-
-
     //play track based on id
     this.currentTrack = 78995489;
    }
 
-   getJSONP(url, success) {
-       var ud = '_' + +new Date,
-           script = document.createElement('script'),
-           head = document.getElementsByTagName('head')[0]
-                  || document.documentElement;
-       window[ud] = function(data) {
-           head.removeChild(script);
-           success && success(data);
-       };
-       script.src = url.replace('callback=?', 'callback=' + ud);
-       head.appendChild(script);
-   }
+   // getJSONP(url, success) {
+   //     var ud = '_' + +new Date,
+   //         script = document.createElement('script'),
+   //         head = document.getElementsByTagName('head')[0]
+   //                || document.documentElement;
+   //     window[ud] = function(data) {
+   //         head.removeChild(script);
+   //         success && success(data);
+   //     };
+   //     script.src = url.replace('callback=?', 'callback=' + ud);
+   //     head.appendChild(script);
+   // }
 
    init(){
      //initialize sound cloud
      SC.initialize({
-       client_id: 'fd4e76fc67798bfa742089ed619084a6',
+       // client_id: 'fd4e76fc67798bfa742089ed619084a6',
+       client_id: 'ebe2d1362a92fc057ac484fcfb265049',
        redirect_uri: 'http://example.com/callback'
      });
+     // SC.connect().then(function(){
+     //   SC.put('/me', {
+     //     user:{description: 'SC API'}
+     //   });
+     // });
+     // SC.connect().then(this.displaySongs());
+     // SC.get("/playlists/2050462").then(function(arg){
+     //   console.log(arg.tracks);
+     // }).catch(function(err){
+     //   console.log(err);
+     // });
    }
 
    stream(){
@@ -139,14 +102,11 @@ var tracks = [];
       // console.log('Latest track: ' + tracks[this.currentTrack].full_name);
       console.log('Latest track: ' + tracks.artwork_url);
 
-      // SC.oEmbed(track.permalink_url, document.getElementById('playlist'));
-
       //try rewriting it as a promise and storing the data to display when it runs
       //that should be in here
       //$('#playlist').html('<img src="' + tracks.artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks.title + ' <a href=' + tracks.permalink_url + '>' + '</a> <br/> Genre: ' +  tracks.genre + '</h5>');
 
     });
-
     $('#playlist').html('<img src="' + tracks.artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks.title + ' <a href=' + tracks.permalink_url + '>' + '</a> <br/> Genre: ' +  tracks.genre + '</h5>');
 
     // var promise = new Promise(function(resolve, reject){
@@ -247,11 +207,11 @@ function init(){
   //usually the items are lowercase and have an upperCase later in the word
   var SoundCloud = new soundCloud();
 
-  SoundCloud.getJSONP('http://soundcloud.com/oembed?url=http%3A//soundcloud.com/david-butterfield-music/to-the-stars-ft-liam-brien%20&format=js&callback=?', function(data){
-      console.log(data);
-  });
-
   SoundCloud.init();
+
+  // SoundCloud.getJSONP('http://soundcloud.com/oembed?url=http%3A//soundcloud.com/david-butterfield-music/to-the-stars-ft-liam-brien%20&format=js&callback=?', function(data){
+  //     console.log(data);
+  // });
 
   SoundCloud.stream();
 
