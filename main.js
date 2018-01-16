@@ -21,19 +21,6 @@ var tracks = [];
     this.currentTrack = 78995489;
    }
 
-   // getJSONP(url, success) {
-   //     var ud = '_' + +new Date,
-   //         script = document.createElement('script'),
-   //         head = document.getElementsByTagName('head')[0]
-   //                || document.documentElement;
-   //     window[ud] = function(data) {
-   //         head.removeChild(script);
-   //         success && success(data);
-   //     };
-   //     script.src = url.replace('callback=?', 'callback=' + ud);
-   //     head.appendChild(script);
-   // }
-
    init(){
      //initialize sound cloud
      SC.initialize({
@@ -41,22 +28,11 @@ var tracks = [];
        client_id: 'ebe2d1362a92fc057ac484fcfb265049',
        redirect_uri: 'http://example.com/callback'
      });
-     // SC.connect().then(function(){
-     //   SC.put('/me', {
-     //     user:{description: 'SC API'}
-     //   });
-     // });
-     // SC.connect().then(this.displaySongs());
-     // SC.get("/playlists/2050462").then(function(arg){
-     //   console.log(arg.tracks);
-     // }).catch(function(err){
-     //   console.log(err);
-     // });
    }
 
    stream(){
      SC.stream("/tracks/78995489").then(function(player){
-         tracks = player;
+         // tracks = player;
          //console.log(player);
 
         // streams the track
@@ -87,71 +63,40 @@ var tracks = [];
 
   //this displays the tracks on the page as a method
   displaySongs(){
-    $('#playlist').html('');
+    // $('#playlist').html('');
     //currentTrack = this.currentTrack;
 
-    for(var i = 0; i < tracks.length; i++){
-      this.tracks.push(tracks[i]);
-    }
+    // for(var i = 0; i < tracks.length; i++){
+    //   this.tracks.push(tracks[i]);
+    // }
+    var current = this.currentTrack;
 
-    SC.get("/tracks/"+ this.currentTrack).then(function(player){
-      tracks = player;
+    SC.get("/tracks/"+ current).then(function(tracks){
+      // tracks = player;
       console.log('Latest track: ' + tracks.title);
       console.log('Latest track: ' + tracks.permalink_url);
       //authors do not exist in the SC
       // console.log('Latest track: ' + tracks[this.currentTrack].full_name);
       console.log('Latest track: ' + tracks.artwork_url);
 
-      //try rewriting it as a promise and storing the data to display when it runs
-      //that should be in here
-      //$('#playlist').html('<img src="' + tracks.artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks.title + ' <a href=' + tracks.permalink_url + '>' + '</a> <br/> Genre: ' +  tracks.genre + '</h5>');
+
+
+      // You have to store the results in a variable first
+      var title = tracks.title,
+          artwork_url = tracks.artwork_url,
+          permalink_url = tracks.permalink_url,
+          genre = tracks.genre,
+          c = current;
+
+
+      //storing the variables allowed them to be pulled in the code inside the get function.
+      $('#playlist').html('<img src="' + artwork_url + '"/>'+ '<h5 id="song_' + c + '"> <a href=' + permalink_url + '>' + title + '</a> <br/> Genre: ' +  genre + '</h5>');
 
     });
-    debugger;
-    $('#playlist').html('<img src="' + tracks.artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks.title + ' <a href=' + tracks.permalink_url + '>' + '</a> <br/> Genre: ' +  tracks.genre + '</h5>');
-
-    // var promise = new Promise(function(resolve, reject){
-    //   SC.get("/tracks/"+ this.currentTrack).then(function(player){
-    //     tracks = player;
-    //     console.log('Latest track: ' + tracks.title);
-    //     console.log('Latest track: ' + tracks.permalink_url);
-    //     //authors do not exist in the SC
-    //     // console.log('Latest track: ' + tracks[this.currentTrack].full_name);
-    //     console.log('Latest track: ' + tracks.artwork_url);
-    //
-    //
-    //     //try rewriting it as a promise and storing the data to display when it runs
-    //     //that should be in here
-    //     //$('#playlist').html('<img src="' + tracks.artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks.title + ' <a href=' + tracks.permalink_url + '>' + '</a> <br/> Genre: ' +  tracks.genre + '</h5>');
-    //
-    //     resolve(tracks);
-    //   });
-    //   $('#playlist').html('<img src="' + tracks.artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks.title + ' <a href=' + tracks.permalink_url + '>' + '</a> <br/> Genre: ' +  tracks.genre + '</h5>');
-    //
-    // });
-    //
-    // return promise;
-
-
-
-    //$('#playlist').html( '<img src="' + tracks[this.currentTrack].artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks[this.currentTrack].name + ' by <a href=' + tracks[this.currentTrack].permalink_url + '>' + '</a>' +  tracks[this.currentTrack].genre + '</h5>');
-
-    // for (var i = 0; i < tracks.length; i++) {
-    //     $('#playlist').html( '<img src="' + tracks[i].avatar_url + '"/>'+ '<h5 id="song_' + i + '">' + tracks[i].name + ' by <a href=' + tracks[i].permalink_url + '>' + '</a>' +  tracks[i].genre + '</h5>');
-    //   }
+    // debugger;
+    // $('#playlist').html('<img src="' + tracks.artwork_url + '"/>'+ '<h5 id="song_' + this.currentTrack + '">' + tracks.title + ' <a href=' + tracks.permalink_url + '>' + '</a> <br/> Genre: ' +  tracks.genre + '</h5>');
 
   }
-
-  // displaySongs(){
-  //   var songEl = document.createElement('div');
-  //   var link = document.createElement('a');
-  //   link.href = tracks.permalink_url;
-  //   var text = document.createTextNode(tracks.title + ', ' + tracks.genre);
-  //   link.appendChild(text);
-  //   songEl.appendChild(link);
-  //
-  //   document.getElementById('playlist').appendChild(songEl);
-  // }
 
   playsong(){
     SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
@@ -209,10 +154,6 @@ function init(){
   var SoundCloud = new soundCloud();
 
   SoundCloud.init();
-
-  // SoundCloud.getJSONP('http://soundcloud.com/oembed?url=http%3A//soundcloud.com/david-butterfield-music/to-the-stars-ft-liam-brien%20&format=js&callback=?', function(data){
-  //     console.log(data);
-  // });
 
   SoundCloud.stream();
 
