@@ -37,24 +37,24 @@ var tracks = [];
 
         // streams the track
         player.play();
-        $('#PlayBtn').hide();
-        $('#PauseBtn').show();
+        // $('#PlayBtn').hide();
+        // $('#PauseBtn').show();
 
         $('#PlayBtn').click(function(){
           player.play();
-          $(this).hide();
-          $('#PauseBtn').show();
+          // $(this).hide();
+          // $('#PauseBtn').show();
         });
         $('#PauseBtn').click(function(){
           player.pause();
-          $(this).hide();
-          $('#PlayBtn').show();
+          // $(this).hide();
+          // $('#PlayBtn').show();
         });
         $('#StopBtn').click(function(){
           player.pause();
           player.seek(0);
-          $('#PauseBtn').hide();
-          $('#PlayBtn').show();
+          // $('#PauseBtn').hide();
+          // $('#PlayBtn').show();
         });
         displaySongs();
       });
@@ -101,8 +101,8 @@ var tracks = [];
   playsong(){
     SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
       tracks = player;
-      $('#PlayBtn').hide();
-      $('#PauseBtn').show();
+      // $('#PlayBtn').hide();
+      // $('#PauseBtn').show();
     	player.play();
       	player.on("finish",function(){
           this.currentTrack ++;
@@ -114,8 +114,8 @@ var tracks = [];
   pause(){
     SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
       tracks = player;
-      $('#PauseBtn').hide();
-      $('#PlayBtn').show();
+      // $('#PauseBtn').hide();
+      // $('#PlayBtn').show();
     	player.pause();
       	player.on("finish",function(){
           this.currentTrack ++;
@@ -127,8 +127,8 @@ var tracks = [];
   stop(){
     SC.stream( "/tracks/"+ this.currentTrack ).then(function(player){
       tracks = player;
-      $('#PauseBtn').hide();
-      $('#PlayBtn').show();
+      // $('#PauseBtn').hide();
+      // $('#PlayBtn').show();
     	player.pause();
       player.seek(0);
       	player.on("finish",function(){
